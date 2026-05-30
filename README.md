@@ -10,9 +10,9 @@ Plataforma web segura de firma digital con validación criptográfica.
 ## Equipo
 | Rol | Persona |
 |-----|---------|
-| Product Owner | [Nombre P1] |
-| Scrum Master | [Nombre P2] |
-| Developer | [Nombre P3] |
+| Product Owner | Brayan Jacome |
+| Scrum Master | Sebastian Parra |
+| Developer | Juan Granda |
 
 ## Sprints
 - Sprint 1 (Sem 1-2): Planificación + entorno
