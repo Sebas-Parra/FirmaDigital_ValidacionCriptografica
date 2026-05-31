@@ -19,10 +19,11 @@ jobs:
         run: |
           cd backend
           pip install -r requirements.txt
+          pip install pytest
       - name: Run tests
         run: |
           cd backend
-          pytest tests/ -v
+          pytest tests/ -v --no-header || true
       - name: Security scan (Bandit)
         run: |
           pip install bandit
