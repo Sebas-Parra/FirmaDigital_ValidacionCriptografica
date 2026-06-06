@@ -1,5 +1,4 @@
 # FirmaDigital - Validación Criptográfica
-
 Plataforma web segura de firma digital con validación criptográfica.
 
 ## Stack
@@ -15,7 +14,20 @@ Plataforma web segura de firma digital con validación criptográfica.
 | Developer | Juan Granda |
 
 ## Sprints
-- Sprint 1 (Sem 1-2): Planificación + entorno
-- Sprint 2 (Sem 3-4): Frontend + autenticación + hash
-- Sprint 3 (Sem 5-6): Criptografía + firma + CA
-- Sprint 4 (Sem 7-8): Pruebas + artículo
+
+### Sprint 1 (Sem 1-2): Planificación + entorno ✅
+**Retrospectiva:**
+- ✅ Se configuró el repositorio con estructura Flask + Vue
+- ✅ Se conectó Flask a Supabase (PostgreSQL)
+- ✅ Se configuró el pipeline CI con GitHub Actions + Bandit
+- ✅ Se instalaron y configuraron las 4 VMs en red interna
+- 📌 Aprendizaje: psycopg2 es necesario para conectar Python con PostgreSQL
+
+### Sprint 2 (Sem 3-4): Frontend + autenticación + hash
+_(en progreso)_
+
+### Sprint 3 (Sem 5-6): Criptografía + firma + CA
+_(pendiente)_
+
+### Sprint 4 (Sem 7-8): Pruebas + artículo
+_(pendiente)_
