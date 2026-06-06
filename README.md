@@ -15,13 +15,13 @@ Plataforma web segura de firma digital con validación criptográfica.
 
 ## Sprints
 
-### Sprint 1 (Sem 1-2): Planificación + entorno ✅
+### Sprint 1 (Sem 1-2): Planificación + entorno 
 **Retrospectiva:**
-- ✅ Se configuró el repositorio con estructura Flask + Vue
-- ✅ Se conectó Flask a Supabase (PostgreSQL)
-- ✅ Se configuró el pipeline CI con GitHub Actions + Bandit
-- ✅ Se instalaron y configuraron las 4 VMs en red interna
-- 📌 Aprendizaje: psycopg2 es necesario para conectar Python con PostgreSQL
+- Se configuró el repositorio con estructura Flask + Vue
+- Se conectó Flask a Supabase (PostgreSQL)
+- Se configuró el pipeline CI con GitHub Actions + Bandit
+- Se instalaron y configuraron las 4 VMs en red interna
+- Aprendizaje: psycopg2 es necesario para conectar Python con PostgreSQL
 
 ### Sprint 2 (Sem 3-4): Frontend + autenticación + hash
 _(en progreso)_
