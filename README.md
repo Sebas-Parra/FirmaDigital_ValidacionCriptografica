@@ -24,7 +24,13 @@ Plataforma web segura de firma digital con validación criptográfica.
 - Aprendizaje: psycopg2 es necesario para conectar Python con PostgreSQL
 
 ### Sprint 2 (Sem 3-4): Frontend + autenticación + hash
-_(en progreso)_
+**Retrospectiva:**
+- Se implementó autenticación con JWT y bcrypt
+- Se crearon los modelos de BD con SQLAlchemy (users, certificates, documents, logs)
+- Se implementó SHA-256 para verificación de integridad de archivos
+- Se desarrolló el frontend con Vue.js 3 y Tailwind CSS
+- Se configuró CORS con variables de entorno
+- Aprendizaje: flask-cors debe aplicarse a la app, no al JWT manager
 
 ### Sprint 3 (Sem 5-6): Criptografía + firma + CA
 _(pendiente)_
