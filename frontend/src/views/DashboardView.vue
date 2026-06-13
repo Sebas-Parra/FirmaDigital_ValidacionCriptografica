@@ -30,18 +30,20 @@
       <!-- Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
+        <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all cursor-pointer" 
+          @click="$router.push('/documents')">
           <div class="text-4xl mb-4">📄</div>
           <h3 class="font-semibold text-indigo-900 text-lg mb-1">Documentos</h3>
           <p class="text-gray-500 text-sm mb-4">Sube y firma documentos digitalmente con SHA-256 y RSA</p>
-          <span class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">Sprint 3</span>
+          <span class="text-xs bg-green-50 text-green-600 px-3 py-1 rounded-full">Disponible</span>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
+        <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all cursor-pointer" 
+          @click="$router.push('/certificates')">
           <div class="text-4xl mb-4">🏆</div>
           <h3 class="font-semibold text-indigo-900 text-lg mb-1">Certificados</h3>
           <p class="text-gray-500 text-sm mb-4">Gestiona tus certificados digitales X.509</p>
-          <span class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">Sprint 3</span>
+          <span class="text-xs bg-green-50 text-green-600 px-3 py-1 rounded-full">Disponible</span>
         </div>
 
         <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">

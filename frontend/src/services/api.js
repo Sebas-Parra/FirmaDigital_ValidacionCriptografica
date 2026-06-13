@@ -32,4 +32,23 @@ export const authService = {
   me: () => api.get('/auth/me')
 }
 
+export const documentService = {
+  upload: (formData) => api.post('/documents/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  list: () => api.get('/documents/list'),
+  verify: (formData) => api.post('/documents/verify', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  delete: (id) => api.delete(`/documents/${id}`)
+}
+
+export const certificateService = {
+  generate: () => api.post('/certificates/generate'),
+  list: () => api.get('/certificates/list'),
+  sign: (docId) => api.post(`/certificates/sign/${docId}`),
+  verifySignature: (docId) => api.get(`/certificates/verify-signature/${docId}`),
+  revoke: (certId) => api.post(`/certificates/revoke/${certId}`)
+}
+
 export default api

@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import DocumentsView from '../views/DocumentsView.vue'
+import CertificatesView from '../views/CertificatesView.vue'
 
 const routes = [
   {
@@ -17,6 +19,8 @@ const routes = [
     name: 'Dashboard',
     component: DashboardView
   },
+    { path: '/documents', name: 'Documents', component: DocumentsView },
+  { path: '/certificates', name: 'Certificates', component: CertificatesView }
 ]
 
 const router = createRouter({

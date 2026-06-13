@@ -67,6 +67,8 @@ class Document(db.Model):
             'file_hash': self.file_hash,
             'is_encrypted': self.is_encrypted,
             'storage_path': self.storage_path,
+            'signature': self.signature,
+            'certificate_id': self.certificate_id,
             'uploaded_at': self.uploaded_at.isoformat()
         }
 
