@@ -31,4 +31,7 @@ def create_app():
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
+    from app.routes.documents import documents_bp
+    app.register_blueprint(documents_bp, url_prefix='/api/documents')
+
     return app
