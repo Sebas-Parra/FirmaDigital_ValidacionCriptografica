@@ -27,11 +27,14 @@ def create_app():
         from app.models.models import User, Certificate, Document, Log
         db.create_all()
 
-    # Registrar blueprints
+    # Registramos los blueprints
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     from app.routes.documents import documents_bp
     app.register_blueprint(documents_bp, url_prefix='/api/documents')
+
+    from app.routes.certificates import certificates_bp
+    app.register_blueprint(certificates_bp, url_prefix='/api/certificates')
 
     return app
