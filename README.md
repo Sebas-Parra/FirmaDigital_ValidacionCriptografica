@@ -33,7 +33,13 @@ Plataforma web segura de firma digital con validación criptográfica.
 - Aprendizaje: flask-cors debe aplicarse a la app, no al JWT manager
 
 ### Sprint 3 (Sem 5-6): Criptografía + firma + CA
-_(pendiente)_
+**Retrospectiva:**
+- Se implementó cifrado AES-256-GCM para archivos
+- Se generaron pares de claves RSA-2048 por usuario
+- Se implementó firma digital y verificación con RSA
+- Se simuló una CA con certificados X.509
+- Se desarrollaron las vistas de Documentos y Certificados en Vue
+- Aprendizaje: to_dict() debe incluir todos los campos necesarios para el frontend
 
 ### Sprint 4 (Sem 7-8): Pruebas + artículo
 _(pendiente)_
