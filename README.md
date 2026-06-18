@@ -11,7 +11,7 @@ Plataforma web segura de firma digital con validación criptográfica.
 |-----|---------|
 | Product Owner | Brayan Jacome |
 | Scrum Master | Sebastian Parra |
-| Developer | Juan Granda |
+| Apoyo Moral | Juan Granda |
 
 ## Sprints
 
