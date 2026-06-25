@@ -2,11 +2,21 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.hash_service import hash_file, verify_file_integrity, encrypt_file, decrypt_file
 from app.services.auth_service import log_action
+from app.services.storage_service import upload_file, get_signed_url, delete_file
 from app.models.models import Document
 from app import db
 import base64
+import re
+import unicodedata
+
+
+def _safe_storage_name(filename):
+    normalized = unicodedata.normalize('NFKD', filename)
+    ascii_name = normalized.encode('ascii', 'ignore').decode('ascii')
+    return re.sub(r'[^\w.\-]', '_', ascii_name)
 
 documents_bp = Blueprint('documents', __name__)
+
 
 @documents_bp.route('/upload', methods=['POST'])
 @jwt_required()
@@ -25,20 +35,27 @@ def upload_document():
         return jsonify({'error': 'Solo se permiten archivos PDF'}), 400
 
     file_bytes = file.read()
+
+    if not re.match(rb'^%PDF-[12]\.\d', file_bytes[:10]):
+        return jsonify({'error': 'El archivo no es un PDF válido'}), 400
     file_hash = hash_file(file_bytes)
     encrypt = request.form.get('encrypt', 'false').lower() == 'true'
 
-    storage_path = None
     encryption_key = None
     encryption_nonce = None
 
+    safe_name = _safe_storage_name(file.filename)
     if encrypt:
         encrypted_bytes, key, nonce = encrypt_file(file_bytes)
-        storage_path = f"documentos/{user_id}/{file.filename}.enc"
+        storage_path = f"{user_id}/{safe_name}.enc"
         encryption_key = base64.b64encode(key).decode('utf-8')
         encryption_nonce = base64.b64encode(nonce).decode('utf-8')
+        bytes_to_save = encrypted_bytes
     else:
-        storage_path = f"documentos/{user_id}/{file.filename}"
+        storage_path = f"{user_id}/{safe_name}"
+        bytes_to_save = file_bytes
+
+    upload_file(storage_path, bytes_to_save, encrypt)
 
     document = Document(
         user_id=user_id,
@@ -65,6 +82,27 @@ def upload_document():
         response['warning'] = 'Guarda la clave y nonce — son necesarios para descifrar'
 
     return jsonify(response), 201
+
+
+@documents_bp.route('/<int:doc_id>/download', methods=['GET'])
+@jwt_required()
+def download_document(doc_id):
+    user_id = int(get_jwt_identity())
+    document = Document.query.filter_by(id=doc_id, user_id=user_id).first()
+
+    if not document:
+        return jsonify({'error': 'Documento no encontrado'}), 404
+
+    if not document.storage_path:
+        return jsonify({'error': 'Archivo no disponible'}), 404
+
+    try:
+        signed_url = get_signed_url(document.storage_path, expires_in=60)
+        log_action(user_id, 'DOWNLOAD_DOCUMENT', request.remote_addr,
+                   f'Documento ID: {doc_id} descargado')
+        return jsonify({'url': signed_url}), 200
+    except Exception:
+        return jsonify({'error': 'No se pudo generar el enlace de descarga'}), 500
 
 
 @documents_bp.route('/verify', methods=['POST'])
@@ -149,6 +187,12 @@ def delete_document(doc_id):
 
     if not document:
         return jsonify({'error': 'Documento no encontrado'}), 404
+
+    if document.storage_path:
+        try:
+            delete_file(document.storage_path)
+        except Exception:
+            pass
 
     db.session.delete(document)
     db.session.commit()

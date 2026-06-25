@@ -17,8 +17,10 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB máximo por request
 
-    CORS(app, origins=os.getenv('ALLOWED_ORIGINS').split(','))
+    origins = (os.getenv('ALLOWED_ORIGINS') or 'http://localhost:8080').split(',')
+    CORS(app, origins=origins, supports_credentials=True)
 
     db.init_app(app)
     jwt.init_app(app)
@@ -36,5 +38,8 @@ def create_app():
 
     from app.routes.certificates import certificates_bp
     app.register_blueprint(certificates_bp, url_prefix='/api/certificates')
+
+    from app.routes.admin import admin_bp
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
 
     return app

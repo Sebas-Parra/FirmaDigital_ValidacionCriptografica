@@ -4,7 +4,7 @@ from app import db
 
 def hash_password(password: str) -> str:
     """Hashea una contraseña con bcrypt"""
-    salt = bcrypt.gensalt()
+    salt = bcrypt.gensalt(rounds=10)
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed.decode('utf-8')
 
