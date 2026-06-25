@@ -11,20 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: |
           cd backend
           pip install -r requirements.txt
           pip install pytest
+
       - name: Run tests
         run: |
           cd backend
-          pytest tests/ -v --no-header || true
+          pytest tests/ -v --no-header
+
       - name: Security scan (Bandit)
         run: |
           pip install bandit
           bandit -r backend/app/ -ll
+
+      - name: Dependency vulnerability scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: backend/
+          severity: HIGH,CRITICAL
+          format: table
+          exit-code: 0
