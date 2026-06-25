@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 venv/
-.env
+backend/.env
 *.db
 *.sqlite3
 instance/
@@ -10,8 +10,8 @@ instance/
 # Vue / Node
 node_modules/
 dist/
-.env.local
-.env.production
+frontend/.env.local
+frontend/.env.production
 
 # IDE
 .vscode/

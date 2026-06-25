@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5000/api',
+  baseURL: process.env.VUE_APP_API_URL || 'http://127.0.0.1:5000/api',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -29,7 +29,9 @@ api.interceptors.response.use(
 export const authService = {
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
-  me: () => api.get('/auth/me')
+  me: () => api.get('/auth/me'),
+  updateProfile: (data) => api.put('/auth/me', data),
+  deleteAccount: () => api.delete('/auth/me')
 }
 
 export const documentService = {
@@ -40,7 +42,17 @@ export const documentService = {
   verify: (formData) => api.post('/documents/verify', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
+  download: (id) => api.get(`/documents/${id}/download`),
+  decrypt: (data) => api.post('/documents/decrypt', data),
   delete: (id) => api.delete(`/documents/${id}`)
+}
+
+export const adminService = {
+  listUsers: () => api.get('/admin/users'),
+  createUser: (data) => api.post('/admin/users', data),
+  updateUser: (id, data) => api.put(`/admin/users/${id}`, data),
+  deleteUser: (id) => api.delete(`/admin/users/${id}`),
+  changeRole: (id, role) => api.put(`/admin/users/${id}/role`, { role })
 }
 
 export const certificateService = {
