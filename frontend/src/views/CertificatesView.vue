@@ -1,32 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <nav class="bg-indigo-950 text-white px-8 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-2.5">
-        <svg class="w-4 h-4 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-        </svg>
-        <span class="font-semibold tracking-tight">FirmaDigital</span>
-      </div>
-      <div class="flex items-center gap-6 text-sm">
-        <router-link to="/dashboard" class="text-indigo-400 hover:text-white transition-colors">Dashboard</router-link>
-        <router-link v-if="isAdmin" to="/admin" class="text-amber-400 hover:text-white transition-colors">Admin</router-link>
-        <span class="text-indigo-700">|</span>
-        <router-link to="/profile" class="text-indigo-300 hover:text-white transition-colors">{{ user.username }}</router-link>
-        <button @click="logout" class="text-indigo-400 hover:text-white transition-colors">Salir</button>
-      </div>
-    </nav>
+  <div class="min-h-screen bg-gray-50 flex">
+    <AppSidebar />
 
+    <div class="flex-1 overflow-y-auto">
     <div class="max-w-3xl mx-auto px-6 py-10">
       <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-8">Certificados digitales</h2>
-
-      <!-- Notificación -->
-      <div v-if="notification" class="flex items-start justify-between rounded-xl px-4 py-3 mb-5 border"
-        :class="notification.type === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'">
-        <p class="text-sm font-medium" :class="notification.type === 'success' ? 'text-green-800' : 'text-red-700'">
-          {{ notification.message }}
-        </p>
-        <button @click="notification = null" class="ml-4 text-lg leading-none opacity-50 hover:opacity-100">&times;</button>
-      </div>
 
       <!-- Generar -->
       <div class="bg-white border border-gray-200 rounded-xl p-6 mb-5">
@@ -38,7 +16,7 @@
           <button
             @click="generateCertificate"
             :disabled="generating || hasActive"
-            class="shrink-0 ml-6 bg-indigo-950 hover:bg-indigo-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
+            class="shrink-0 ml-6 bg-emerald-950 hover:bg-emerald-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
             {{ generating ? 'Generando...' : hasActive ? 'Ya tienes uno activo' : 'Generar' }}
           </button>
         </div>
@@ -80,21 +58,26 @@
               <span>Vence: {{ new Date(cert.expires_at).toLocaleDateString() }}</span>
             </div>
             <details class="mt-3">
-              <summary class="text-xs text-indigo-600 cursor-pointer hover:text-indigo-800 w-fit">Ver PEM</summary>
+              <summary class="text-xs text-emerald-600 cursor-pointer hover:text-emerald-800 w-fit">Ver PEM</summary>
               <pre class="text-xs bg-gray-50 border border-gray-100 rounded-lg p-3 mt-2 overflow-auto text-gray-500 leading-relaxed">{{ cert.certificate_pem }}</pre>
             </details>
           </div>
         </div>
       </div>
     </div>
+    </div><!-- flex-1 -->
+    <AppToast :notification="notification" @close="notification = null" />
   </div>
 </template>
 
 <script>
 import { certificateService } from '@/services/api'
+import AppSidebar from '@/components/AppSidebar.vue'
+import AppToast from '@/components/AppToast.vue'
 
 export default {
   name: 'CertificatesView',
+  components: { AppSidebar, AppToast },
   data() {
     return {
       user: JSON.parse(localStorage.getItem('user') || '{}'),
@@ -108,9 +91,6 @@ export default {
   computed: {
     hasActive() {
       return this.certificates.some(c => c.status === 'active')
-    },
-    isAdmin() {
-      return ['admin', 'superuser'].includes(this.user.role)
     }
   },
   async created() {
@@ -121,11 +101,6 @@ export default {
     await this.loadCertificates()
   },
   methods: {
-    logout() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      this.$router.push('/login')
-    },
     async loadCertificates() {
       this.loading = true
       try {

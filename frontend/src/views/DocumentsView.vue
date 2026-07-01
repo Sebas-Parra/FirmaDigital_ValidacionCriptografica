@@ -1,21 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <nav class="bg-indigo-950 text-white px-8 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-2.5">
-        <svg class="w-4 h-4 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-        </svg>
-        <span class="font-semibold tracking-tight">FirmaDigital</span>
-      </div>
-      <div class="flex items-center gap-6 text-sm">
-        <router-link to="/dashboard" class="text-indigo-400 hover:text-white transition-colors">Dashboard</router-link>
-        <router-link v-if="isAdmin" to="/admin" class="text-amber-400 hover:text-white transition-colors">Admin</router-link>
-        <span class="text-indigo-700">|</span>
-        <router-link to="/profile" class="text-indigo-300 hover:text-white transition-colors">{{ user.username }}</router-link>
-        <button @click="logout" class="text-indigo-400 hover:text-white transition-colors">Salir</button>
-      </div>
-    </nav>
+  <div class="min-h-screen bg-gray-50 flex">
+    <AppSidebar />
 
+    <div class="flex-1 overflow-y-auto">
     <div class="max-w-3xl mx-auto px-6 py-10">
       <h2 class="text-2xl font-bold text-gray-900 tracking-tight mb-8">Documentos</h2>
 
@@ -26,7 +13,7 @@
           <input ref="uploadInput" type="file" accept=".pdf" @change="handleFile" class="hidden"/>
           <div class="flex items-center gap-2 flex-wrap">
             <button @click="$refs.uploadInput.click()"
-              class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100 px-4 py-1.5 rounded-lg font-medium transition-all">
+              class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100 px-4 py-1.5 rounded-lg font-medium transition-all">
               Seleccionar PDF
             </button>
             <div v-if="selectedFile" class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
@@ -43,13 +30,13 @@
             <span v-else class="text-xs text-gray-400">Ningún archivo seleccionado</span>
           </div>
           <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer w-fit">
-            <input type="checkbox" v-model="encrypt" class="rounded accent-indigo-700"/>
+            <input type="checkbox" v-model="encrypt" class="rounded accent-emerald-700"/>
             Cifrar con AES-256-GCM
           </label>
           <button
             @click="uploadDocument"
             :disabled="!selectedFile || uploading"
-            class="bg-indigo-950 hover:bg-indigo-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
+            class="bg-emerald-950 hover:bg-emerald-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
             {{ uploading ? 'Subiendo...' : 'Subir' }}
           </button>
         </div>
@@ -67,23 +54,6 @@
         <div v-if="uploadError" class="mt-3 bg-red-50 border border-red-100 rounded-lg p-3">
           <p class="text-red-700 text-sm">{{ uploadError }}</p>
         </div>
-      </div>
-
-      <!-- Notificación -->
-      <div v-if="notification" class="flex items-start justify-between rounded-xl px-4 py-3 mb-5 border"
-        :class="notification.type === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'">
-        <div>
-          <p class="text-sm font-medium" :class="notification.type === 'success' ? 'text-green-800' : 'text-red-700'">
-            {{ notification.message }}
-          </p>
-          <div v-if="notification.hashes" class="mt-2 space-y-0.5">
-            <p class="text-xs font-mono text-gray-500">Original: {{ notification.hashes.stored }}</p>
-            <p class="text-xs font-mono" :class="notification.type === 'success' ? 'text-gray-500' : 'text-red-400'">
-              Actual:&nbsp;&nbsp;&nbsp;{{ notification.hashes.current }}
-            </p>
-          </div>
-        </div>
-        <button @click="notification = null" class="ml-4 text-lg leading-none opacity-50 hover:opacity-100">&times;</button>
       </div>
 
       <!-- Lista -->
@@ -104,7 +74,7 @@
                 <span v-if="doc.signature"
                   class="text-xs bg-green-50 text-green-700 border border-green-100 px-2 py-0.5 rounded-md">Firmado</span>
                 <span v-if="verifiedDocs[doc.id] === true"
-                  class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-md">Verificado</span>
+                  class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-md">Verificado</span>
                 <span v-if="verifiedDocs[doc.id] === false"
                   class="text-xs bg-red-50 text-red-700 border border-red-100 px-2 py-0.5 rounded-md">Firma inválida</span>
               </div>
@@ -114,7 +84,7 @@
             <div class="flex gap-2 shrink-0">
               <button v-if="!doc.signature"
                 @click="signDocument(doc.id)"
-                class="text-xs border border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-700 px-3 py-1.5 rounded-lg transition-all">
+                class="text-xs border border-gray-200 text-gray-600 hover:border-emerald-300 hover:text-emerald-700 px-3 py-1.5 rounded-lg transition-all">
                 Firmar
               </button>
               <button v-if="doc.signature"
@@ -124,7 +94,7 @@
               </button>
               <button
                 @click="downloadDocument(doc.id, doc.filename)"
-                class="text-xs border border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-700 px-3 py-1.5 rounded-lg transition-all">
+                class="text-xs border border-gray-200 text-gray-600 hover:border-emerald-300 hover:text-emerald-700 px-3 py-1.5 rounded-lg transition-all">
                 Descargar
               </button>
               <button
@@ -168,7 +138,7 @@
             <label class="block text-xs text-gray-500 mb-1.5">Documento original a comparar</label>
             <div class="relative">
               <div class="flex items-center border rounded-lg overflow-hidden transition-all"
-                :class="verifyForm.showDocDropdown ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-gray-200'">
+                :class="verifyForm.showDocDropdown ? 'border-emerald-400 ring-2 ring-emerald-100' : 'border-gray-200'">
                 <svg class="w-3.5 h-3.5 text-gray-400 ml-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -192,8 +162,8 @@
                 <div class="max-h-48 overflow-y-auto">
                   <button v-for="doc in filteredDocuments" :key="doc.id"
                     @mousedown="selectVerifyDoc(doc)"
-                    class="w-full text-left px-3.5 py-2.5 text-sm hover:bg-indigo-50 flex items-center justify-between gap-3 transition-colors"
-                    :class="verifyForm.documentId === doc.id ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700'">
+                    class="w-full text-left px-3.5 py-2.5 text-sm hover:bg-emerald-50 flex items-center justify-between gap-3 transition-colors"
+                    :class="verifyForm.documentId === doc.id ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700'">
                     <span class="truncate font-medium">{{ doc.filename }}</span>
                     <span class="text-xs text-gray-400 font-mono shrink-0">{{ doc.file_hash.slice(0, 12) }}…</span>
                   </button>
@@ -210,7 +180,7 @@
           <button
             @click="verifyIntegrity"
             :disabled="!verifyForm.file || !verifyForm.documentId || verifyForm.loading"
-            class="bg-indigo-950 hover:bg-indigo-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
+            class="bg-emerald-950 hover:bg-emerald-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
             {{ verifyForm.loading ? 'Verificando...' : 'Verificar integridad' }}
           </button>
         </div>
@@ -267,7 +237,7 @@
               v-model="decryptForm.key"
               type="text"
               placeholder="rFyQI5c4q3AhMaME0ATN/..."
-              class="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+              class="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
           </div>
           <div>
             <label class="block text-xs text-gray-500 mb-1.5">Nonce (base64)</label>
@@ -275,12 +245,12 @@
               v-model="decryptForm.nonce"
               type="text"
               placeholder="a9Wtv94Ufdm+KPXf"
-              class="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+              class="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"/>
           </div>
           <button
             @click="decryptDocument"
             :disabled="!decryptForm.encFile || !decryptForm.key || !decryptForm.nonce || decrypting"
-            class="bg-indigo-950 hover:bg-indigo-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
+            class="bg-emerald-950 hover:bg-emerald-900 disabled:bg-gray-200 disabled:text-gray-400 text-white px-5 py-2 rounded-lg text-sm font-medium w-fit transition-all">
             {{ decrypting ? 'Descifrando...' : 'Descifrar y descargar' }}
           </button>
         </div>
@@ -291,18 +261,20 @@
       </div>
 
     </div>
+    </div><!-- flex-1 -->
+    <AppToast :notification="notification" @close="notification = null" />
   </div>
 </template>
 
 <script>
 import { documentService, certificateService } from '@/services/api'
+import AppSidebar from '@/components/AppSidebar.vue'
+import AppToast from '@/components/AppToast.vue'
 
 export default {
   name: 'DocumentsView',
+  components: { AppSidebar, AppToast },
   computed: {
-    isAdmin() {
-      return ['admin', 'superuser'].includes(this.user.role)
-    },
     filteredDocuments() {
       const q = this.verifyForm.docSearch.toLowerCase().trim()
       if (!q) return this.documents
@@ -335,11 +307,6 @@ export default {
     await this.loadDocuments()
   },
   methods: {
-    logout() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      this.$router.push('/login')
-    },
     handleFile(e) {
       this.selectedFile = e.target.files[0]
       this.uploadResult = null
